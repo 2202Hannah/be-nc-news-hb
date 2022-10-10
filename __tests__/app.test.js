@@ -96,7 +96,7 @@ describe("GET /api/users", () => {
       .get("/api/users")
       .expect(200);
   });
-  test("return an object with the expected values", () => {
+  test("return an object with the values from the users table", () => {
     return request(app)
       .get("/api/users")
       .then(({ body }) => {
