@@ -89,3 +89,29 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("return status 200 when successful", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200);
+  });
+  test("return an object with the expected values", () => {
+    return request(app)
+      .get("/api/users")
+      .then(({ body }) => {
+        const usersArray = body.users;
+        expect(usersArray).toHaveLength(4);
+
+        usersArray.forEach(user => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String)
+            })
+          );
+        });
+      });
+  });
+});
