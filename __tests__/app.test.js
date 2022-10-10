@@ -48,3 +48,44 @@ describe("GET /api/topics", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id", () => {
+  test("return status 200 when successful", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200);
+  });
+  test("return an object with the expected values", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .then(({ body: article }) => {
+        expect(article.article).toEqual(
+          expect.objectContaining({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number)
+          })
+        );
+      });
+  });
+  test("400: responds with an error when passed an article_id of an incorrect type", () => {
+    return request(app)
+      .get("/api/articles/not-a-number")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid ID type");
+      });
+  });
+  test("404: responds with an error when passed an article_id not present in our database", () => {
+    return request(app)
+      .get("/api/articles/100000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("article_id not found in the database");
+      });
+  });
+});
