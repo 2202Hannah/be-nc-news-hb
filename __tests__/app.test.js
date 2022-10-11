@@ -55,7 +55,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200);
   });
-  test("return an object with the expected values", () => {
+  test("return an object with the expected values of the requested article with comments", () => {
     return request(app)
       .get("/api/articles/1")
       .then(({ body: article }) => {
@@ -67,7 +67,26 @@ describe("GET /api/articles/:article_id", () => {
             author: "butter_bridge",
             body: "I find this existence challenging",
             created_at: "2020-07-09T20:11:00.000Z",
-            votes: 100
+            votes: 100,
+            comment_count: "11"
+          })
+        );
+      });
+  });
+  test("return an object with the expected values for the article when there are no comments", () => {
+    return request(app)
+      .get("/api/articles/12")
+      .then(({ body: article }) => {
+        expect(article.article).toEqual(
+          expect.objectContaining({
+            article_id: 12,
+            title: "Moustache",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "Have you seen the size of that thing?",
+            created_at: "2020-10-11T11:24:00.000Z",
+            votes: 0,
+            comment_count: "0"
           })
         );
       });
