@@ -202,3 +202,69 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+describe("GET /api/articles?topic=:topic", () => {
+  test("return status 200 when successful with no query", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200);
+  });
+  test("return an object with the expected article values with not given a query", () => {
+    return request(app)
+      .get("/api/articles")
+      .then(response => {
+        const {
+          body: { articles }
+        } = response;
+        expect(articles).toHaveLength(12);
+        expect(articles).toBeSortedBy("created_at");
+        articles.forEach(article => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number)
+            })
+          );
+        });
+      });
+  });
+  test("returns an object with the expected article values when given a query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(response => {
+        const {
+          body: { articles }
+        } = response;
+        expect(articles).toHaveLength(11);
+        expect(articles).toBeSortedBy("created_at");
+        articles.forEach(article => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number)
+            })
+          );
+        });
+      });
+  });
+  test("400: responds with an error when passed a topic thats doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/topic=555")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+});
