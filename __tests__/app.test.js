@@ -77,7 +77,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/not-a-number")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid ID type");
+        expect(body.msg).toBe("You have made a bad request - invalid type");
       });
   });
   test("404: responds with an error when passed an article_id not present in our database", () => {
@@ -116,14 +116,14 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("PATCH /api/articles/:article_id", () => {
-  test("returns status 200 and the updated restaurant object with updated votes amount when successful", () => {
+describe("PATCH /api/articles/:article_id", () => {
+  test("returns status 200 and the updated object with updated votes amount when successful", () => {
     return request(app)
       .patch("/api/articles/1")
       .expect(200)
       .send({ inc_votes: -100 })
-      .then(({ body: article }) => {
-        expect(article.article).toEqual(
+      .then(({ body }) => {
+        expect(body.article).toEqual(
           expect.objectContaining({
             article_id: 1,
             title: "Living in the shadow of a great man",
@@ -136,13 +136,41 @@ describe.only("PATCH /api/articles/:article_id", () => {
         );
       });
   });
+  test("200: returns the article unchanged when passed an empty object", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100
+          })
+        );
+      });
+  });
   test("400: responds with an error when passed an article_id of an incorrect type", () => {
     return request(app)
       .patch("/api/articles/not-a-number")
       .send({ inc_votes: 1 })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid ID type");
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+  test("400: responds with an error when passed a votes update that is an invalid type", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "not-a-number" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
       });
   });
   test("404: responds with an error when passed an article_id not present in our database", () => {
@@ -152,17 +180,6 @@ describe.only("PATCH /api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("article_id not found in the database");
-      });
-  });
-  test("400: responds with an error when patch request has no content for the update", () => {
-    return request(app)
-      .patch("/api/articles/1")
-      .send({})
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe(
-          "This is a bad request - no data provided for patch request"
-        );
       });
   });
 });

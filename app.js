@@ -23,7 +23,7 @@ app.all("/*", (request, response) => {
 
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
-    response.status(400).send({ msg: "Invalid ID type" });
+    response.status(400).send({ msg: "You have made a bad request - invalid type" });
   } else {
     next(err);
   }
