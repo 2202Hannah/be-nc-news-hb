@@ -1,10 +1,9 @@
 const db = require(`../db/connection`);
 
 exports.selectArticleById = article_id => {
-  console.log("inside the model");
   return db
     .query(
-      `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) AS comment_count
+      `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
       FROM articles
           LEFT JOIN comments ON articles.article_id = comments.article_id
       WHERE articles.article_id = $1
@@ -12,7 +11,6 @@ exports.selectArticleById = article_id => {
       [article_id]
     )
     .then(({ rows }) => {
-      console.log(rows);
       if (rows.length === 1) {
         return rows[0];
       } else {

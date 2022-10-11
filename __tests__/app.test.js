@@ -68,7 +68,7 @@ describe("GET /api/articles/:article_id", () => {
             body: "I find this existence challenging",
             created_at: "2020-07-09T20:11:00.000Z",
             votes: 100,
-            comment_count: "11"
+            comment_count: 11
           })
         );
       });
@@ -86,7 +86,7 @@ describe("GET /api/articles/:article_id", () => {
             body: "Have you seen the size of that thing?",
             created_at: "2020-10-11T11:24:00.000Z",
             votes: 0,
-            comment_count: "0"
+            comment_count: 0
           })
         );
       });
