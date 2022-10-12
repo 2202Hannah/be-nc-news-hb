@@ -77,13 +77,14 @@ exports.selectCommentsByArticleId = article_id => {
       [article_id]
     )
     .then(({ rows }) => {
-      if (rows.length > 0) {
-        return rows;
-      } else {
+      console.log(rows, "<<<< in model");
+      if (rows.length === 0) {
         return Promise.reject({
           status: 404,
           msg: "article_id not found in the database"
         });
+      } else {
+        return rows;
       }
     });
 };

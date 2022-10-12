@@ -313,4 +313,17 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("article_id not found in the database");
       });
   });
+  // test("200: returns an empty array when passed an article that has no comments", () => {
+  //   return request(app)
+  //     .get("/api/articles/11/comments")
+  //     .expect(200)
+  //     .then(response => {
+  //       console.log(response)
+  //       const {
+  //         body: { articles }
+  //       } = response;
+  //       expect(articles).toHaveLength(0);
+  //       expect(articles).toEqual([]);
+  //     });
+  // });
 });
