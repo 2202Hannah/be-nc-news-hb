@@ -270,7 +270,7 @@ describe("GET /api/articles?topic=:topic", () => {
   });
 });
 
-describe("GET /api/articles/:article_id/comments", () => {
+describe.only("GET /api/articles/:article_id/comments", () => {
   test("return status 200 when successful", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -313,17 +313,16 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("article_id not found in the database");
       });
   });
-  // test("200: returns an empty array when passed an article that has no comments", () => {
-  //   return request(app)
-  //     .get("/api/articles/11/comments")
-  //     .expect(200)
-  //     .then(response => {
-  //       console.log(response)
-  //       const {
-  //         body: { articles }
-  //       } = response;
-  //       expect(articles).toHaveLength(0);
-  //       expect(articles).toEqual([]);
-  //     });
-  // });
+  test("200: returns an empty array when passed an article that has no comments", () => {
+    return request(app)
+      .get("/api/articles/11/comments")
+      .expect(200)
+      .then(response => {
+        const {
+          body: { comments }
+        } = response;
+        expect(comments).toHaveLength(0);
+        expect(comments).toEqual([]);
+      });
+  });
 });
