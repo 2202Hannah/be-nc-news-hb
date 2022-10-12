@@ -326,3 +326,37 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+// describe("POST /api/articles/:article_id/comments", () => {
+//   test("returns status 201 and the inserted comment when successful", () => {
+//     return request(app)
+//       .post("/api/articles/1/comments")
+//       .expect(201)
+//       .send({ username: "Han", body: "this is great" })
+//       .then(({ body }) => {
+//         const { comment } = body;
+//         expect(comment).toEqual(
+//           expect.objectContaining({body: "this is great"
+//           })
+//         );
+//       });
+//   });
+  // test("200: returns the article unchanged when passed an empty object", () => {
+  //   return request(app)
+  //     .patch("/api/articles/1")
+  //     .send({})
+  //     .expect(200)
+  //     .then(({ body }) => {
+  //       expect(body.article).toEqual(
+  //         expect.objectContaining({
+  //           article_id: 1,
+  //           title: "Living in the shadow of a great man",
+  //           topic: "mitch",
+  //           author: "butter_bridge",
+  //           body: "I find this existence challenging",
+  //           created_at: "2020-07-09T20:11:00.000Z",
+  //           votes: 100
+  //         })
+  //       );
+  //     });
+  //});

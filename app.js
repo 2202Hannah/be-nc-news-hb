@@ -5,7 +5,8 @@ const {
   getArticleById,
   patchArticleVotesById,
   getArticles,
-  getCommentsByArticleId
+  getCommentsByArticleId,
+  postCommentsByArticleId
 } = require(`./controllers/articles.controller`);
 const { getUsers } = require(`./controllers/users.controller`);
 
@@ -18,6 +19,8 @@ app.get(`/api/articles`, getArticles);
 app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
 
 app.patch(`/api/articles/:article_id`, patchArticleVotesById);
+
+app.post(`/api/articles/:article_id/comments`, postCommentsByArticleId)
 
 //Error handling
 
