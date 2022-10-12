@@ -41,6 +41,7 @@ exports.updateArticleVotes = (article_id, votes = 0) => {
 };
 
 exports.selectArticles = topicFilter => {
+  
   if (topicFilter) {
     return db
       .query(
@@ -53,7 +54,15 @@ exports.selectArticles = topicFilter => {
         [topicFilter]
       )
       .then(({ rows }) => {
-        return rows;
+        const topicsArray = ["paper", "mitch", "cats"]
+        if (rows.length === 0 && !topicsArray.includes(topicFilter)) {
+          return Promise.reject({
+            status: 404,
+            msg: "You have made a bad request - this topic does not exist"
+          });
+        } else {
+          return rows;
+        }
       });
   } else {
     return db
