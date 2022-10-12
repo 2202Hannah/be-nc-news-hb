@@ -202,3 +202,127 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles?topic=:topic", () => {
+  test("return status 200 when successful with no query", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200);
+  });
+  test("return an object with the expected article values with not given a query", () => {
+    return request(app)
+      .get("/api/articles")
+      .then(response => {
+        const {
+          body: { articles }
+        } = response;
+        expect(articles).toHaveLength(12);
+        expect(articles).toBeSortedBy("created_at");
+        articles.forEach(article => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number)
+            })
+          );
+        });
+      });
+  });
+  test("returns an object with the expected article values when given a query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(response => {
+        const {
+          body: { articles }
+        } = response;
+        expect(articles).toHaveLength(11);
+        expect(articles).toBeSortedBy("created_at");
+        articles.forEach(article => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number)
+            })
+          );
+        });
+      });
+  });
+  test("400: responds with an error when passed a topic thats doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/topic=555")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("return status 200 when successful", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200);
+  });
+  test("return an object with the comments for the relevant article ID", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .then(({ body }) => {
+        const commentsArray = body.comments;
+        expect(commentsArray).toHaveLength(11);
+        expect(commentsArray).toBeSortedBy("created_at", { descending: true });
+
+        commentsArray.forEach(comment => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String)
+            })
+          );
+        });
+      });
+  });
+  test("400: responds with an error when passed an article_id that is invalid", () => {
+    return request(app)
+      .get("/api/articles/not-a-number/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+  test("404: responds with an error when passed an article_id not present in our database", () => {
+    return request(app)
+      .get("/api/articles/100000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("article_id not found in the database");
+      });
+  });
+  test("200: returns an empty array when passed an article that has no comments", () => {
+    return request(app)
+      .get("/api/articles/11/comments")
+      .expect(200)
+      .then(response => {
+        const {
+          body: { comments }
+        } = response;
+        expect(comments).toHaveLength(0);
+        expect(comments).toEqual([]);
+      });
+  });
+});

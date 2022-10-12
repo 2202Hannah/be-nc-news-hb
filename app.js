@@ -3,7 +3,9 @@ const app = express();
 const { getTopics } = require(`./controllers/topics.controller.js`);
 const {
   getArticleById,
-  patchArticleVotesById
+  patchArticleVotesById,
+  getArticles,
+  getCommentsByArticleId
 } = require(`./controllers/articles.controller`);
 const { getUsers } = require(`./controllers/users.controller`);
 
@@ -12,6 +14,8 @@ app.use(express.json());
 app.get(`/api/topics`, getTopics);
 app.get(`/api/articles/:article_id`, getArticleById);
 app.get(`/api/users`, getUsers);
+app.get(`/api/articles`, getArticles);
+app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
 
 app.patch(`/api/articles/:article_id`, patchArticleVotesById);
 
@@ -23,7 +27,9 @@ app.all("/*", (request, response) => {
 
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
-    response.status(400).send({ msg: "You have made a bad request - invalid type" });
+    response
+      .status(400)
+      .send({ msg: "You have made a bad request - invalid type" });
   } else {
     next(err);
   }
