@@ -202,7 +202,7 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
-describe("GET /api/articles?topic=:topic", () => {
+describe.only("GET /api/articles?topic=:topic", () => {
   test("return status 200 when successful with no query", () => {
     return request(app)
       .get("/api/articles")
@@ -282,6 +282,3 @@ describe("GET /api/articles?topic=:topic", () => {
       });
   });
 });
-
-// test for 404 topic not found in database
-// test for 200 no topic of that type in the database

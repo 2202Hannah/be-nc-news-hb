@@ -41,40 +41,52 @@ exports.updateArticleVotes = (article_id, votes = 0) => {
 };
 
 exports.selectArticles = topicFilter => {
+
+  // let commentQuery = `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+
+  // if (topicFilter) {
+  //   commentQuery += ` WHERE topic = ${topicFilter}`;
+  // }
+
+  // console.log(commentQuery + ` GROUP BY articles.article_id ORDER BY articles.created_at`)
   
-  if (topicFilter) {
-    return db
-      .query(
-        `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
+  return db.query(`SELECT slug FROM topics`).then(({ rows }) => {
+    const topicsArray = rows.map(topic => {
+      return Object.values(topic).toString();
+    });
+    if (topicFilter) {
+      return db
+        .query(
+          `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
       FROM articles
           LEFT JOIN comments ON articles.article_id = comments.article_id
       WHERE topic = $1
       GROUP BY articles.article_id
       ORDER BY articles.created_at`,
-        [topicFilter]
-      )
-      .then(({ rows }) => {
-        const topicsArray = ["paper", "mitch", "cats"]
-        if (rows.length === 0 && !topicsArray.includes(topicFilter)) {
-          return Promise.reject({
-            status: 404,
-            msg: "You have made a bad request - this topic does not exist"
-          });
-        } else {
-          return rows;
-        }
-      });
-  } else {
-    return db
-      .query(
-        `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
+          [topicFilter]
+        )
+        .then(({ rows }) => {
+          if (rows.length === 0 && !topicsArray.includes(topicFilter)) {
+            return Promise.reject({
+              status: 404,
+              msg: "You have made a bad request - this topic does not exist"
+            });
+          } else {
+            return rows;
+          }
+        });
+    } else {
+      return db
+        .query(
+          `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
     FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
     GROUP BY articles.article_id
     ORDER BY articles.created_at`
-      )
-      .then(({ rows }) => {
-        return rows;
-      });
-  }
+        )
+        .then(({ rows }) => {
+          return rows;
+        });
+    }
+  });
 };
