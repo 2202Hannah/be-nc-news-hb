@@ -65,13 +65,3 @@ exports.postCommentsByArticleId = (request, response, next) => {
       next(err);
     });
 };
-
-// const promises = [insertComments(article_id, username, body)];
-
-// if (article_id) {
-//   promises.push(selectArticleById(article_id));
-// }
-
-// console.log(promises);
-
-// Promise.all(promises)
