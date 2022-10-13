@@ -40,55 +40,54 @@ exports.updateArticleVotes = (article_id, votes = 0) => {
     });
 };
 
-exports.selectArticles = topicFilter => {
+exports.selectArticles = (
+  topicFilter,
+  sortQuery = "desc",
+  orderQuery = "created_at"
+) => {
+  sortQuery = sortQuery.toUpperCase();
 
-  // let commentQuery = `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+  if (
+    ["ASC", "DESC"].includes(sortQuery) &&
+    [
+      "article_id",
+      "title",
+      "topic",
+      "author",
+      "body",
+      "created_at",
+      "votes"
+    ].includes(orderQuery)
+  ) {
+    let queryString = `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+    let valueArray = [];
 
-  // if (topicFilter) {
-  //   commentQuery += ` WHERE topic = ${topicFilter}`;
-  // }
-
-  // console.log(commentQuery + ` GROUP BY articles.article_id ORDER BY articles.created_at`)
-  
-  return db.query(`SELECT slug FROM topics`).then(({ rows }) => {
-    const topicsArray = rows.map(topic => {
-      return Object.values(topic).toString();
-    });
     if (topicFilter) {
-      return db
-        .query(
-          `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
-      FROM articles
-          LEFT JOIN comments ON articles.article_id = comments.article_id
-      WHERE topic = $1
-      GROUP BY articles.article_id
-      ORDER BY articles.created_at`,
-          [topicFilter]
-        )
-        .then(({ rows }) => {
-          if (rows.length === 0 && !topicsArray.includes(topicFilter)) {
-            return Promise.reject({
-              status: 404,
-              msg: "You have made a bad request - this topic does not exist"
-            });
-          } else {
-            return rows;
-          }
-        });
-    } else {
-      return db
-        .query(
-          `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
-    FROM articles
-        LEFT JOIN comments ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at`
-        )
-        .then(({ rows }) => {
-          return rows;
-        });
+      queryString += ` WHERE topic = $1`;
+      valueArray.push(topicFilter);
     }
-  });
+
+    queryString += ` GROUP BY articles.article_id ORDER BY ${orderQuery} ${sortQuery};`;
+
+    return db.query(`SELECT slug FROM topics`).then(({ rows }) => {
+      const topicsArray = rows.map(topic => {
+        return Object.values(topic).toString();
+      });
+
+      return db.query(queryString, valueArray).then(({ rows }) => {
+        if (rows.length === 0 && !topicsArray.includes(topicFilter)) {
+          return Promise.reject({
+            status: 404,
+            msg: "You have made a bad request - this topic does not exist"
+          });
+        } else {
+          return rows;
+        }
+      });
+    });
+  } else {
+    return Promise.reject({ status: 400, msg: "You have made a bad request" });
+  }
 };
 
 exports.selectCommentsByArticleId = article_id => {
