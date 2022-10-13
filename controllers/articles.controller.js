@@ -32,7 +32,10 @@ exports.patchArticleVotesById = (request, response, next) => {
 
 exports.getArticles = (request, response, next) => {
   const topicFilter = request.query.topic;
-  selectArticles(topicFilter)
+  let orderQuery = request.query.order;
+  let sortQuery = request.query.sort_by;
+
+  selectArticles(topicFilter, orderQuery, sortQuery)
     .then(articles => {
       response.status(200).send({ articles });
     })
