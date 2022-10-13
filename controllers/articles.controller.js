@@ -1,7 +1,8 @@
 const {
   selectArticleById,
   updateArticleVotes,
-  selectArticles
+  selectArticles,
+  selectCommentsByArticleId
 } = require(`../models/articles.model`);
 
 exports.getArticleById = (request, response, next) => {
@@ -33,6 +34,18 @@ exports.getArticles = (request, response, next) => {
   selectArticles(topicFilter)
     .then(articles => {
       response.status(200).send({ articles });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+exports.getCommentsByArticleId = (request, response, next) => {
+  const { article_id } = request.params;
+  
+  selectCommentsByArticleId(article_id)
+    .then(comments => {
+      response.status(200).send({ comments });
     })
     .catch(err => {
       next(err);
