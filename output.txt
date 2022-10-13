@@ -1,1 +1,7 @@
 You are now connected to database "nc_news" as user "Hannah".
+ comment_id |  body  | article_id |  author   | votes |         created_at         
+------------+--------+------------+-----------+-------+----------------------------
+        303 | hannah |          1 | tickle122 |     0 | 2022-10-12 20:10:50.763871
+(1 row)
+
+INSERT 0 1

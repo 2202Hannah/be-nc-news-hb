@@ -54,8 +54,8 @@ exports.getCommentsByArticleId = (request, response, next) => {
 };
 
 exports.postCommentsByArticleId = (request, response, next) => {
-  const { article_id } = request.params;
-  const {username, body} = request.body
+  const article_id = parseInt(request.params.article_id);
+  const { username, body } = request.body;
 
   insertComments(article_id, username, body)
     .then(comment => {
@@ -65,3 +65,13 @@ exports.postCommentsByArticleId = (request, response, next) => {
       next(err);
     });
 };
+
+// const promises = [insertComments(article_id, username, body)];
+
+// if (article_id) {
+//   promises.push(selectArticleById(article_id));
+// }
+
+// console.log(promises);
+
+// Promise.all(promises)
