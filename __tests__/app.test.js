@@ -356,7 +356,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("You have made a bad request");
       });
   });
-  test("400: responds with an error when there is missing data in the post request", () => {
+  test("400: responds with an error when there no body in the post request", () => {
     return request(app)
       .post("/api/articles/1/comments")
       .send({ username: "icellusedkars" })
@@ -365,15 +365,15 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("You have made a bad request");
       });
   });
-  // test("404: responds with an error when passed a username that is not in the database", () => {
-  //   return request(app)
-  //     .post("/api/articles/1/comments")
-  //     .send({ username: "han", body: "this is great!" })
-  //     .expect(404)
-  //     .then(({ body }) => {
-  //       expect(body.msg).toBe("username not found in the database");
-  //     });
-  // });
+  test("404: responds with an error when passed a username that is not in the database", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "han", body: "this is great!" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Key not found in the database");
+      });
+  });
   test("400: responds with an error when passed an article_id that is invalid", () => {
     return request(app)
       .post("/api/articles/not-a-number/comments")
@@ -383,13 +383,13 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("You have made a bad request - invalid type");
       });
   });
-  // test("404: responds with an error when passed an article_id not present in our database", () => {
-  //   return request(app)
-  //     .post("/api/articles/100000/comments")
-  //     .send({ username: "icellusedkars", body: "this is great!" })
-  //     .expect(404)
-  //     .then(({ body }) => {
-  //       expect(body.msg).toBe("article_id not found in the database");
-  //     });
-  // });
+  test("404: responds with an error when passed an article_id not present in our database", () => {
+    return request(app)
+      .post("/api/articles/100000/comments")
+      .send({ username: "icellusedkars", body: "this is great!" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Key not found in the database");
+      });
+  });
 });
