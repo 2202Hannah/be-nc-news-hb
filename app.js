@@ -5,7 +5,8 @@ const {
   getArticleById,
   patchArticleVotesById,
   getArticles,
-  getCommentsByArticleId
+  getCommentsByArticleId,
+  postCommentsByArticleId
 } = require(`./controllers/articles.controller`);
 const { getUsers } = require(`./controllers/users.controller`);
 
@@ -18,6 +19,8 @@ app.get(`/api/articles`, getArticles);
 app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
 
 app.patch(`/api/articles/:article_id`, patchArticleVotesById);
+
+app.post(`/api/articles/:article_id/comments`, postCommentsByArticleId);
 
 //Error handling
 
@@ -36,6 +39,14 @@ app.use((err, request, response, next) => {
 });
 
 app.use((err, request, response, next) => {
+  if (err.code === "23503") {
+    response.status(404).send({ msg: "Key not found in the database" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, request, response, next) => {
   if (err.status) {
     response.status(err.status).send({ msg: err.msg });
   } else {
@@ -44,6 +55,7 @@ app.use((err, request, response, next) => {
 });
 
 app.use((err, request, response, next) => {
+  console.log(err, "in app");
   response.status(500).send({ msg: "Something went wrong!" });
 });
 
