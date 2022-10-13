@@ -60,7 +60,7 @@ exports.selectArticles = (
     ].includes(orderQuery)
   ) {
     let queryString = `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
-    let valueArray = [];
+    const valueArray = [];
 
     if (topicFilter) {
       queryString += ` WHERE topic = $1`;
