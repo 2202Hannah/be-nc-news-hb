@@ -249,7 +249,7 @@ describe("GET /api/articles?topic=:topic", () => {
             expect.objectContaining({
               article_id: expect.any(Number),
               title: expect.any(String),
-              topic: expect.any(String),
+              topic: "mitch",
               author: expect.any(String),
               body: expect.any(String),
               created_at: expect.any(String),
@@ -260,12 +260,26 @@ describe("GET /api/articles?topic=:topic", () => {
         });
       });
   });
-  test("400: responds with an error when passed a topic thats doesn't exist", () => {
+  test("200: returns an empty array when passed a topic that has no related articles", () => {
     return request(app)
-      .get("/api/articles/topic=555")
-      .expect(400)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(response => {
+        const {
+          body: { articles }
+        } = response;
+        expect(articles).toHaveLength(0);
+        expect(articles).toEqual([]);
+      });
+  });
+  test("404: responds with an error when passed a topic thats doesn't exist", () => {
+    return request(app)
+      .get("/api/articles?topic=hannah")
+      .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe(
+          "You have made a bad request - this topic does not exist"
+        );
       });
   });
 });
