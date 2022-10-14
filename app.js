@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const { getAllEndPoints } = require(`./controllers/contents.controller`)
+const apiRouter = require("./routes/api");
+const { getAllEndPoints } = require(`./controllers/contents.controller`);
 const { getTopics } = require(`./controllers/topics.controller.js`);
 const {
   getArticleById,
@@ -12,8 +13,9 @@ const {
 const { getUsers } = require(`./controllers/users.controller`);
 
 app.use(express.json());
+app.use("/api", apiRouter);
 
-app.get(`/api`, getAllEndPoints)
+app.get(`/api`, getAllEndPoints);
 app.get(`/api/topics`, getTopics);
 app.get(`/api/articles`, getArticles);
 app.get(`/api/articles/:article_id`, getArticleById);
