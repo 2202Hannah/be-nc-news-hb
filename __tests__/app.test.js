@@ -533,7 +533,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "han", body: "this is great!" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Key not found in the database");
+        expect(body.msg).toBe("Value not found in the database");
       });
   });
   test("400: responds with an error when passed an article_id that is invalid", () => {
@@ -551,7 +551,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "icellusedkars", body: "this is great!" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Key not found in the database");
+        expect(body.msg).toBe("Value not found in the database");
       });
   });
 });
@@ -601,6 +601,142 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("comment_id not found in the database");
+      });
+  });
+});
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: returns the updated object with updated votes amount when successful", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .expect(200)
+      .send({ inc_votes: 10 })
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: 1,
+            body:
+              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 26,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: "2020-04-06T12:17:00.000Z"
+          })
+        );
+      });
+  });
+  test("200: returns the comment unchanged when passed an empty object", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: 1,
+            body:
+              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 16,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: "2020-04-06T12:17:00.000Z"
+          })
+        );
+      });
+  });
+  test("400: responds with an error when passed a comment_id of an incorrect type", () => {
+    return request(app)
+      .patch("/api/comments/not-a-number")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+  test("400: responds with an error when passed a votes update that is an invalid type", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: "not-a-number" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+  test("404: responds with an error when passed a comment_id not present in our database", () => {
+    return request(app)
+      .patch("/api/comments/100000")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment_id not found in the database");
+      });
+  });
+});
+
+describe("POST /api/articles", () => {
+  test("201: returns status 201 and the inserted article when successful", () => {
+    return request(app)
+      .post("/api/articles")
+      .expect(201)
+      .send({
+        author: "rogersop",
+        title: "Books for Children",
+        body:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        topic: "paper"
+      })
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 13,
+            title: "Books for Children",
+            topic: "paper",
+            author: "rogersop",
+            body:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            created_at: expect.any(String),
+            votes: 0,
+            comment_count: 0
+          })
+        );
+      });
+  });
+  test("400: responds with an error when there is no data in the post request", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request");
+      });
+  });
+  test("400: responds with an error when there no body in the post request", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "Books for Children",
+        topic: "paper"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request");
+      });
+  });
+  test("404: responds with an error when passed an author that is not in the database", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "han",
+        title: "Books for Children",
+        body:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        topic: "paper"
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Value not found in the database");
       });
   });
 });

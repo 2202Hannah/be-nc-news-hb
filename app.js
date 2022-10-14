@@ -7,13 +7,17 @@ const {
   patchArticleVotesById,
   getArticles,
   getCommentsByArticleId,
-  postCommentsByArticleId
+  postCommentsByArticleId,
+  postArticle
 } = require(`./controllers/articles.controller`);
 const {
   getUsers,
   getUserByUsername
 } = require(`./controllers/users.controller`);
-const { removeComment } = require(`./controllers/comments.controller`);
+const {
+  removeComment,
+  patchCommentVotes
+} = require(`./controllers/comments.controller`);
 
 app.use(express.json());
 
@@ -26,8 +30,10 @@ app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
 app.get(`/api/users/:username`, getUserByUsername);
 
 app.patch(`/api/articles/:article_id`, patchArticleVotesById);
+app.patch(`/api/comments/:comment_id`, patchCommentVotes);
 
 app.post(`/api/articles/:article_id/comments`, postCommentsByArticleId);
+app.post(`/api/articles`, postArticle);
 
 app.delete(`/api/comments/:comment_id`, removeComment);
 
@@ -49,7 +55,7 @@ app.use((err, request, response, next) => {
 
 app.use((err, request, response, next) => {
   if (err.code === "23503") {
-    response.status(404).send({ msg: "Key not found in the database" });
+    response.status(404).send({ msg: "Value not found in the database" });
   } else {
     next(err);
   }
