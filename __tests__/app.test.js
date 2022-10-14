@@ -487,3 +487,28 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  test("200: returns an object with the values for an existing user", () => {
+    return request(app)
+      .get("/api/users/icellusedkars")
+      .then(({ body }) => {
+        expect(body.user).toEqual(
+          expect.objectContaining({
+            username: "icellusedkars",
+            name: "sam",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+          })
+        );
+      });
+  });
+  test("404: responds with an error when passed a username not present in our database", () => {
+    return request(app)
+      .get("/api/users/han")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("username not found in the database");
+      });
+  });
+});
