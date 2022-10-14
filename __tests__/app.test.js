@@ -1,6 +1,7 @@
 const app = require(`../app.js`);
 const request = require("supertest");
 const db = require("../db/connection");
+const contents = require("../endpoints.json");
 
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
@@ -20,6 +21,21 @@ describe("Error handling", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Route not found");
+      });
+  });
+});
+
+describe("GET /api", () => {
+  test("return status 200 when successful", () => {
+    return request(app)
+      .get("/api")
+      .expect(200);
+  });
+  test("return an object containing the expected message", () => {
+    return request(app)
+      .get("/api")
+      .then(({ body }) => {
+        expect(body.message).toEqual(contents);
       });
   });
 });
@@ -55,7 +71,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200);
   });
-  test("return an object with the expected values of the requested article with comments", () => {
+  test("return an object of the requested article with total comments", () => {
     return request(app)
       .get("/api/articles/1")
       .then(({ body: article }) => {
