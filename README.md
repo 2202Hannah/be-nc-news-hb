@@ -1,6 +1,6 @@
 # Northcoders News Backend Project
 
-Link to hosted version:
+Link to hosted version: https://nc-news-hb.herokuapp.com/api
 
 ## Table of Contents
 
