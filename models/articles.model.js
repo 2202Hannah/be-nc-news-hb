@@ -43,7 +43,9 @@ exports.updateArticleVotes = (article_id, votes = 0) => {
 exports.selectArticles = (
   topicFilter,
   sortQuery = "desc",
-  orderQuery = "created_at"
+  orderQuery = "created_at",
+  limit = 10,
+  p = 0
 ) => {
   sortQuery = sortQuery.toUpperCase();
 
@@ -67,7 +69,7 @@ exports.selectArticles = (
       valueArray.push(topicFilter);
     }
 
-    queryString += ` GROUP BY articles.article_id ORDER BY ${orderQuery} ${sortQuery};`;
+    queryString += ` GROUP BY articles.article_id ORDER BY ${orderQuery} ${sortQuery} LIMIT ${limit} OFFSET ${p}`;
 
     return db.query(`SELECT slug FROM topics`).then(({ rows }) => {
       const topicsArray = rows.map(topic => {
@@ -114,9 +116,8 @@ exports.selectCommentsByArticleId = article_id => {
 };
 
 exports.insertComments = (article_id, username, body) => {
-  
-  if(body === undefined || username === undefined ) {
-    return Promise.reject({status: 400, msg: "You have made a bad request"})
+  if (body === undefined || username === undefined) {
+    return Promise.reject({ status: 400, msg: "You have made a bad request" });
   }
 
   return db
