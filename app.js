@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const apiRouter = require("./routes/api");
+//const apiRouter = require("./routes/api");
 const { getAllEndPoints } = require(`./controllers/contents.controller`);
 const { getTopics } = require(`./controllers/topics.controller.js`);
 const {
@@ -13,7 +13,7 @@ const {
 const { getUsers } = require(`./controllers/users.controller`);
 
 app.use(express.json());
-app.use("/api", apiRouter);
+//app.use("/api", apiRouter);
 
 app.get(`/api`, getAllEndPoints);
 app.get(`/api/topics`, getTopics);
