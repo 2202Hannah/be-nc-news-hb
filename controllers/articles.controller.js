@@ -34,8 +34,10 @@ exports.getArticles = (request, response, next) => {
   const topicFilter = request.query.topic;
   let orderQuery = request.query.order;
   let sortQuery = request.query.sort_by;
+  let limit = request.query.limit;
+  let p = request.query.p;
 
-  selectArticles(topicFilter, orderQuery, sortQuery)
+  selectArticles(topicFilter, orderQuery, sortQuery, limit, p)
     .then(articles => {
       response.status(200).send({ articles });
     })
