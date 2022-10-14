@@ -17,7 +17,7 @@ I used the MVC model to structure the project.
 
 I wrote the application using full Test Driven Development (TDD). The tests for the application can be found in the **tests** folder. The tests also account for error handling and consider user error.
 
-I am hosting the app on Heroku.
+I am hosting the app on Heroku here: https://nc-news-hb.herokuapp.com/api
 
 In the future I hope to implement a frontend user interface.
 
