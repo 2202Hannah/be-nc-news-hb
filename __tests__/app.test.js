@@ -536,3 +536,71 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: returns the updated object with updated votes amount when successful", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .expect(200)
+      .send({ inc_votes: 10 })
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: 1,
+            body:
+              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 26,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: "2020-04-06T12:17:00.000Z"
+          })
+        );
+      });
+  });
+  test("200: returns the comment unchanged when passed an empty object", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: 1,
+            body:
+              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 16,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: "2020-04-06T12:17:00.000Z"
+          })
+        );
+      });
+  });
+  test("400: responds with an error when passed a comment_id of an incorrect type", () => {
+    return request(app)
+      .patch("/api/comments/not-a-number")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+  test("400: responds with an error when passed a votes update that is an invalid type", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: "not-a-number" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+  test("404: responds with an error when passed a comment_id not present in our database", () => {
+    return request(app)
+      .patch("/api/comments/100000")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment_id not found in the database");
+      });
+  });
+});

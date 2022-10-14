@@ -10,7 +10,7 @@ const {
   postCommentsByArticleId
 } = require(`./controllers/articles.controller`);
 const { getUsers, getUserByUsername } = require(`./controllers/users.controller`);
-const {removeComment} = require(`./controllers/comments.controller`);
+const {removeComment, patchCommentVotes} = require(`./controllers/comments.controller`);
 
 app.use(express.json());
 
@@ -23,6 +23,7 @@ app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
 app.get(`/api/users/:username`, getUserByUsername)
 
 app.patch(`/api/articles/:article_id`, patchArticleVotesById);
+app.patch(`/api/comments/:comment_id`, patchCommentVotes)
 
 app.post(`/api/articles/:article_id/comments`, postCommentsByArticleId);
 

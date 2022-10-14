@@ -16,3 +16,21 @@ exports.deleteComment = comment_id => {
       }
     });
 };
+
+exports.updateCommentVotes = (comment_id, votes = 0) => {
+  return db
+    .query(
+      `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *`,
+      [votes, comment_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 1) {
+        return rows[0];
+      } else {
+        return Promise.reject({
+          status: 404,
+          msg: "comment_id not found in the database"
+        });
+      }
+    });
+};
