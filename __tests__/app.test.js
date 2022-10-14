@@ -487,3 +487,27 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: returns status 204 when a comment has been successfully deleted", () => {
+    return request(app)
+      .delete("/api/comments/5")
+      .expect(204);
+  });
+  test("400: responds with an error when passed a comment ID that is invalid", () => {
+    return request(app)
+      .delete("/api/comments/not-a-number")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid type");
+      });
+  });
+  test("404: responds with an error when passed a comment ID not present in our database", () => {
+    return request(app)
+      .delete("/api/comments/10000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment_id not found in the database");
+      });
+  });
+});

@@ -10,6 +10,7 @@ const {
   postCommentsByArticleId
 } = require(`./controllers/articles.controller`);
 const { getUsers } = require(`./controllers/users.controller`);
+const {removeComment} = require(`./controllers/comments.controller`);
 
 app.use(express.json());
 
@@ -23,6 +24,8 @@ app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
 app.patch(`/api/articles/:article_id`, patchArticleVotesById);
 
 app.post(`/api/articles/:article_id/comments`, postCommentsByArticleId);
+
+app.delete(`/api/comments/:comment_id`, removeComment)
 
 //Error handling
 
