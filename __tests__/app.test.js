@@ -465,7 +465,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "han", body: "this is great!" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Key not found in the database");
+        expect(body.msg).toBe("Value not found in the database");
       });
   });
   test("400: responds with an error when passed an article_id that is invalid", () => {
@@ -483,7 +483,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "icellusedkars", body: "this is great!" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Key not found in the database");
+        expect(body.msg).toBe("Value not found in the database");
       });
   });
 });
@@ -601,6 +601,74 @@ describe("PATCH /api/comments/:comment_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("comment_id not found in the database");
+      });
+  });
+});
+
+describe("POST /api/articles", () => {
+  test("201: returns status 201 and the inserted article when successful", () => {
+    return request(app)
+      .post("/api/articles")
+      .expect(201)
+      .send({
+        author: "rogersop",
+        title: "Books for Children",
+        body:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        topic: "paper"
+      })
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 13,
+            title: "Books for Children",
+            topic: "paper",
+            author: "rogersop",
+            body:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            created_at: expect.any(String),
+            votes: 0,
+            comment_count: 0
+          })
+        );
+      });
+  });
+  test("400: responds with an error when there is no data in the post request", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request");
+      });
+  });
+  test("400: responds with an error when there no body in the post request", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "Books for Children",
+        topic: "paper"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request");
+      });
+  });
+  test("404: responds with an error when passed an author that is not in the database", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "han",
+        title: "Books for Children",
+        body:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        topic: "paper"
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Value not found in the database");
       });
   });
 });
