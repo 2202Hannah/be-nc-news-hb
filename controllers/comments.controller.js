@@ -21,7 +21,6 @@ exports.patchCommentVotes = (request, response, next) => {
 
   updateCommentVotes(comment_id, votes)
     .then(comment => {
-      console.log(comment);
       response.status(200).send({ comment });
     })
     .catch(err => {
