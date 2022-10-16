@@ -92,14 +92,14 @@ exports.selectArticles = (
   }
 };
 
-exports.selectCommentsByArticleId = article_id => {
+exports.selectCommentsByArticleId = (article_id, limit = 10, p = 0) => {
   return db.query(`SELECT article_id FROM articles`).then(({ rows }) => {
     const idArray = rows.map(id => {
       return Object.values(id).toString();
     });
     return db
       .query(
-        `SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1 ORDER BY created_at DESC`,
+        `SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1 ORDER BY created_at DESC LIMIT ${limit} OFFSET ${p}`,
         [article_id]
       )
       .then(({ rows }) => {

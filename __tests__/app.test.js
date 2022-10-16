@@ -422,7 +422,7 @@ describe("GET /api/articles?topic=:topic", () => {
         expect(body.msg).toBe("You have made a bad request - invalid query");
       });
   });
-  test("400: responds with an error when passed an invalid query for page", () => {
+  test("400: responds with an error when passed an invalid query for page number (p)", () => {
     return request(app)
       .get("/api/articles?p=delete")
       .expect(400)
@@ -432,10 +432,10 @@ describe("GET /api/articles?topic=:topic", () => {
   });
 });
 
-describe("GET /api/articles/:article_id/comments", () => {
+describe.only("GET /api/articles/:article_id/comments", () => {
   test("return status 200 when successful", () => {
     return request(app)
-      .get("/api/articles/1/comments")
+      .get("/api/articles/1/comments?")
       .expect(200);
   });
   test("return an object with the comments for the relevant article ID", () => {
@@ -443,7 +443,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .then(({ body }) => {
         const commentsArray = body.comments;
-        expect(commentsArray).toHaveLength(11);
+        expect(commentsArray).toHaveLength(10);
         expect(commentsArray).toBeSortedBy("created_at", { descending: true });
 
         commentsArray.forEach(comment => {
@@ -454,6 +454,49 @@ describe("GET /api/articles/:article_id/comments", () => {
               created_at: expect.any(String),
               author: expect.any(String),
               body: expect.any(String)
+            })
+          );
+        });
+      });
+  });
+  test("200: returns an object with the expected comments when given a limit query = 5", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5")
+      .expect(200)
+      .then(({ body }) => {
+        const commentsArray = body.comments;
+        expect(commentsArray).toHaveLength(5);
+        expect(commentsArray).toBeSortedBy("created_at", { descending: true });
+
+        commentsArray.forEach(comment => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String)
+            })
+          );
+        });
+      });
+  });
+  test("200: returns an object with the expected comment values when given a limit query = 1 and p = 1", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=1&p=1")
+      .expect(200)
+      .then(({ body }) => {
+        const commentsArray = body.comments;
+        expect(commentsArray).toHaveLength(1);
+        commentsArray.forEach(comment => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: 2,
+              votes: 14,
+              created_at: "2020-10-31T03:03:00.000Z",
+              author: "butter_bridge",
+              body:
+                "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky."
             })
           );
         });
@@ -485,6 +528,22 @@ describe("GET /api/articles/:article_id/comments", () => {
         } = response;
         expect(comments).toHaveLength(0);
         expect(comments).toEqual([]);
+      });
+  });
+  test("400: responds with an error when passed an invalid query to limit by", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=not-valid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid query");
+      });
+  });
+  test("400: responds with an error when passed an invalid query for page number (p)", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=delete")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request - invalid query");
       });
   });
 });
