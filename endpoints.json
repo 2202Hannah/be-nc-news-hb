@@ -11,7 +11,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["author", "topic", "sort_by", "order", "limit", "page (p)"],
     "exampleResponse": {
       "articles": [
         {
@@ -50,7 +50,7 @@
     ]
   },
   "GET /api/articles/:article_id/comments": {
-    "description": "serves an array of all comments for the specified article",
+    "description": "serves an array of all comments for a specified article",
     "queries": [],
     "exampleResponse": [
       {
@@ -62,8 +62,17 @@
       }
     ]
   },
+  "GET /api/articles/:username": {
+    "description": "serves an object of information about a specific user",
+    "queries": [],
+    "exampleResponse": {
+      "username": "icellusedkars",
+      "name": "sam",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+    }
+  },
   "PATCH /api/articles/:article_id": {
-    "description": "updates the specified article's number of votes by a given amount and serves the updated article object",
+    "description": "updates the specified article's number of votes and serves the updated article object",
     "queries": [],
     "exampleInput": { "inc_votes": 100 },
     "exampleResponse": {
@@ -76,8 +85,21 @@
       "votes": 100
     }
   },
+  "PATCH /api/comments/:comment_id": {
+    "description": "updates the specified comment's number of votes and serves the updated comment object",
+    "queries": [],
+    "exampleInput": { "inc_votes": 10 },
+    "exampleResponse": {
+      "comment_id": 1,
+      "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      "votes": 26,
+      "author": "butter_bridge",
+      "article_id": 9,
+      "created_at": "2020-04-06T12:17:00.000Z"
+    }
+  },
   "POST /api/articles/:article_id/comments": {
-    "description": "inserts a new comment to the database and serves an the new comment object",
+    "description": "inserts a new comment to the database and serves the new comment object",
     "queries": [],
     "exampleInput": { "username": "icellusedkars", "body": "this is great!" },
     "exampleResponse": {
@@ -89,7 +111,27 @@
       "created_at": "2022-10-13T15:15:02.213Z"
     }
   },
+  "POST /api/articles": {
+    "description": "inserts a new article to the articles table and returns the new article",
+    "queries": [],
+    "exampleInput": {
+      "author": "rogersop",
+      "title": "Books for Children",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "topic": "paper"
+    },
+    "exampleResponse": {
+      "article_id": 13,
+      "title": "Books for Children",
+      "topic": "paper",
+      "author": "rogersop",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "created_at": "2022-10-13T15:15:02.213Z",
+      "votes": 0,
+      "comment_count": 0
+    }
+  },
   "DELETE /api/comment/comment_id": {
-    "description": "Deletes a comment from the database by comment ID"
+    "description": "Deletes a specific comment from the database"
   }
 }
