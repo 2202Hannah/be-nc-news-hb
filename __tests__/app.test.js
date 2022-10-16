@@ -432,7 +432,7 @@ describe("GET /api/articles?topic=:topic", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id/comments", () => {
+describe("GET /api/articles/:article_id/comments", () => {
   test("return status 200 when successful", () => {
     return request(app)
       .get("/api/articles/1/comments?")
