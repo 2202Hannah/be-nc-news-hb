@@ -131,7 +131,7 @@
       "comment_count": 0
     }
   },
-  "DELETE /api/comment/comment_id": {
+  "DELETE /api/comments/comment_id": {
     "description": "Deletes a specific comment from the database"
   }
 }
