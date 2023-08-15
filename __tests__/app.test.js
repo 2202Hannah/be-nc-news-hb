@@ -219,7 +219,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe("GET /api/articles?topic=:topic", () => {
+describe("GET /api/articles", () => {
   test("200: returns an object with the expected article values when not given a query considering pagination default = 10", () => {
     return request(app)
       .get("/api/articles")
@@ -740,27 +740,57 @@ describe("POST /api/articles", () => {
       .send({
         author: "rogersop",
         title: "Books for Children",
-        body:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        topic: "paper"
+        body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        topic: "paper",
+        article_img_url:
+          "https://schoolreadinglist.co.uk/wp-content/uploads/2022/10/reception-books-ft.jpg"
       })
       .then(({ body }) => {
         const { article } = body;
         expect(article).toEqual(
           expect.objectContaining({
-            article_id: 13,
+            article_id: 14,
             title: "Books for Children",
             topic: "paper",
             author: "rogersop",
-            body:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
             created_at: expect.any(String),
             votes: 0,
-            comment_count: 0
+            comment_count: 0,
+            article_img_url:
+              "https://schoolreadinglist.co.uk/wp-content/uploads/2022/10/reception-books-ft.jpg"
           })
         );
       });
   });
+   test("201: returns status 201 and the inserted article with the default image when successful", () => {
+     return request(app)
+       .post("/api/articles")
+       .expect(201)
+       .send({
+         author: "rogersop",
+         title: "Books for Children",
+         body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+         topic: "paper",
+       })
+       .then(({ body }) => {
+         const { article } = body;
+         expect(article).toEqual(
+           expect.objectContaining({
+             article_id: 14,
+             title: "Books for Children",
+             topic: "paper",
+             author: "rogersop",
+             body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+             created_at: expect.any(String),
+             votes: 0,
+             comment_count: 0,
+             article_img_url:
+               "https://pbs.twimg.com/profile_images/1333392601450426370/x_DT51WI_400x400.jpg",
+           })
+         );
+       });
+   });
   test("400: responds with an error when there is no data in the post request", () => {
     return request(app)
       .post("/api/articles")

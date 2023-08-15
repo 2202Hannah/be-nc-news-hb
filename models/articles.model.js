@@ -130,20 +130,23 @@ exports.insertComments = (article_id, username, body) => {
     });
 };
 
-exports.insertArticle = (author, title, body, topic) => {
+exports.insertArticle = (author, title, body, topic, article_img_url) => {
   
   if(body === undefined || title === undefined || author === undefined || topic === undefined) {
     return Promise.reject({status: 400, msg: "You have made a bad request"})
   }
 
+  if (article_img_url === undefined) article_img_url =
+    "https://pbs.twimg.com/profile_images/1333392601450426370/x_DT51WI_400x400.jpg";
+
   return db
     .query(
-      `INSERT INTO articles (author, title, body, topic) VALUES ($1, $2, $3, $4) RETURNING *`,
-      [author, title, body, topic]
+      `INSERT INTO articles (author, title, body, topic, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [author, title, body, topic, article_img_url]
     )
     .then(({ rows: [article] }) => {
       const newArticleId = article.article_id;
-      return db.query(`SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
+      return db.query(`SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
       WHERE articles.article_id = ${newArticleId}
       GROUP BY articles.article_id `).then(({rows: [article]}) => {
         return article;

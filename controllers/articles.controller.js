@@ -75,9 +75,9 @@ exports.postCommentsByArticleId = (request, response, next) => {
 };
 
 exports.postArticle = (request, response, next) => {
-  const { author, title, body, topic } = request.body;
+  const { author, title, body, topic, article_img_url } = request.body;
 
-  insertArticle(author, title, body, topic)
+  insertArticle(author, title, body, topic, article_img_url)
     .then(article => {
       response.status(201).send({ article });
     })
