@@ -41,13 +41,25 @@
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": [],
-    "exampleResponse": [
+    "exampleResponse": { 
+      "users": [
       {
         "username": "butter_bridge",
         "name": "jonny",
         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
       }
     ]
+  }
+},
+  "GET /api/users/:username": {
+    "description": "serves an object of information about a specific user",
+    "queries": [],
+    "exampleResponse": 
+      {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of all comments for a specified article",
