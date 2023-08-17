@@ -143,9 +143,21 @@
       "votes": 0,
       "comment_count": 0,
       "article_img_url": "https://schoolreadinglist.co.uk/wp-content/uploads/2022/10/reception-books-ft.jpg"
-    }
+    },
+  "POST /api/topics": {
+    "description": "inserts a new topic to the topics table and returns the new topic",
+    "queries": [],
+    "exampleInput": {
+  "slug": "topic name here",
+  "description": "description here"
+    },
+    "exampleResponse": {
+  "slug": "topic name here",
+  "description": "description here"
+}
   },
   "DELETE /api/comments/comment_id": {
     "description": "Deletes a specific comment from the database"
   }
+}
 }

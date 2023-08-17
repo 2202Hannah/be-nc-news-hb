@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { getAllEndPoints } = require(`./controllers/contents.controller`);
-const { getTopics } = require(`./controllers/topics.controller.js`);
+const { getTopics, postTopic } = require(`./controllers/topics.controller.js`);
 const {
   getArticleById,
   patchArticleVotesById,
@@ -34,6 +34,7 @@ app.patch(`/api/comments/:comment_id`, patchCommentVotes);
 
 app.post(`/api/articles/:article_id/comments`, postCommentsByArticleId);
 app.post(`/api/articles`, postArticle);
+app.post(`/api/topics`, postTopic);
 
 app.delete(`/api/comments/:comment_id`, removeComment);
 
