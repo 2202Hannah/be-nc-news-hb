@@ -7,5 +7,5 @@ on:
       greeting:
         runs-on: ubuntu-latest
         steps:
-          -name: say hello
+          - name: say hello
           run: echo "hello from pipeline"
