@@ -4,8 +4,11 @@ on:
     branches: 
     - main
     jobs:
-      greeting:
-      runs-on: ubuntu-latest
-      steps:
-        - name: say hello
-        run: echo "hello from pipeline"
+      test-utils:
+        runs-on: ubuntu-latest
+        steps:
+          - name: checkout and clone repo
+          uses: actions/checkout@v3
+          - name: install dependencies
+          run: npm install
+          - name: run test-utils
