@@ -8,7 +8,8 @@ const {
   getArticles,
   getCommentsByArticleId,
   postCommentsByArticleId,
-  postArticle
+  postArticle,
+  removeArticle
 } = require(`./controllers/articles.controller`);
 const {
   getUsers,
@@ -37,6 +38,7 @@ app.post(`/api/articles`, postArticle);
 app.post(`/api/topics`, postTopic);
 
 app.delete(`/api/comments/:comment_id`, removeComment);
+app.delete(`/api/articles/:article_id`, removeArticle)
 
 //Error handling
 
@@ -48,7 +50,7 @@ app.use((err, request, response, next) => {
   if (err.code === "22P02") {
     response
       .status(400)
-      .send({ msg: "You have made a bad request - invalid type" });
+      .send({ msg: "You have made a bad request" });
   } else {
     next(err);
   }
@@ -66,7 +68,7 @@ app.use((err, request, response, next) => {
   if (err.code === "42703") {
     response
       .status(400)
-      .send({ msg: "You have made a bad request - invalid query" });
+      .send({ msg: "You have made a bad request" });
   } else {
     next(err);
   }

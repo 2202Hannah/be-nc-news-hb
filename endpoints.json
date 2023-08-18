@@ -159,5 +159,8 @@
   "DELETE /api/comments/comment_id": {
     "description": "Deletes a specific comment from the database"
   }
-}
+},
+  "DELETE /api/articles/article_id": {
+    "description": "Deletes a specific article from the database"
+  }
 }

@@ -1,6 +1,6 @@
 const db = require(`../db/connection`);
 
-exports.selectArticleById = article_id => {
+exports.selectArticleById = (article_id) => {
   return db
     .query(
       `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count
@@ -16,7 +16,7 @@ exports.selectArticleById = article_id => {
       } else {
         return Promise.reject({
           status: 404,
-          msg: "article_id not found in the database"
+          msg: "article_id not found in the database",
         });
       }
     });
@@ -34,7 +34,7 @@ exports.updateArticleVotes = (article_id, votes = 0) => {
       } else {
         return Promise.reject({
           status: 404,
-          msg: "article_id not found in the database"
+          msg: "article_id not found in the database",
         });
       }
     });
@@ -58,7 +58,7 @@ exports.selectArticles = (
       "author",
       "body",
       "created_at",
-      "votes"
+      "votes",
     ].includes(orderQuery)
   ) {
     let queryString = `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
@@ -72,7 +72,7 @@ exports.selectArticles = (
     queryString += ` GROUP BY articles.article_id ORDER BY ${orderQuery} ${sortQuery} LIMIT ${limit} OFFSET ${p}`;
 
     return db.query(`SELECT slug FROM topics`).then(({ rows }) => {
-      const topicsArray = rows.map(topic => {
+      const topicsArray = rows.map((topic) => {
         return Object.values(topic).toString();
       });
 
@@ -80,7 +80,7 @@ exports.selectArticles = (
         if (rows.length === 0 && !topicsArray.includes(topicFilter)) {
           return Promise.reject({
             status: 404,
-            msg: "You have made a bad request - this topic does not exist"
+            msg: "You have made a bad request - this topic does not exist",
           });
         } else {
           return rows;
@@ -94,7 +94,7 @@ exports.selectArticles = (
 
 exports.selectCommentsByArticleId = (article_id, limit = 10, p = 0) => {
   return db.query(`SELECT article_id FROM articles`).then(({ rows }) => {
-    const idArray = rows.map(id => {
+    const idArray = rows.map((id) => {
       return Object.values(id).toString();
     });
     return db
@@ -106,7 +106,7 @@ exports.selectCommentsByArticleId = (article_id, limit = 10, p = 0) => {
         if (rows.length === 0 && !idArray.includes(article_id)) {
           return Promise.reject({
             status: 404,
-            msg: "article_id not found in the database"
+            msg: "article_id not found in the database",
           });
         } else {
           return rows;
@@ -131,13 +131,18 @@ exports.insertComments = (article_id, username, body) => {
 };
 
 exports.insertArticle = (author, title, body, topic, article_img_url) => {
-  
-  if(body === undefined || title === undefined || author === undefined || topic === undefined) {
-    return Promise.reject({status: 400, msg: "You have made a bad request"})
+  if (
+    body === undefined ||
+    title === undefined ||
+    author === undefined ||
+    topic === undefined
+  ) {
+    return Promise.reject({ status: 400, msg: "You have made a bad request" });
   }
 
-  if (article_img_url === undefined) article_img_url =
-    "https://pbs.twimg.com/profile_images/1333392601450426370/x_DT51WI_400x400.jpg";
+  if (article_img_url === undefined)
+    article_img_url =
+      "https://pbs.twimg.com/profile_images/1333392601450426370/x_DT51WI_400x400.jpg";
 
   return db
     .query(
@@ -146,11 +151,30 @@ exports.insertArticle = (author, title, body, topic, article_img_url) => {
     )
     .then(({ rows: [article] }) => {
       const newArticleId = article.article_id;
-      return db.query(`SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
+      return db
+        .query(
+          `SELECT articles.article_id, title, topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url, COUNT(comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
       WHERE articles.article_id = ${newArticleId}
-      GROUP BY articles.article_id `).then(({rows: [article]}) => {
-        return article;
-      })
+      GROUP BY articles.article_id `
+        )
+        .then(({ rows: [article] }) => {
+          return article;
+        });
     });
+};
 
-}
+exports.deleteArticle = (article_id) => {
+  return db
+    .query(`DELETE FROM articles WHERE article_id = $1 RETURNING *`, 
+    [article_id])
+    .then(({rows}) => {
+      if (rows.length === 1) {
+        return rows;
+      } else {
+        return Promise.reject({
+          status: 404,
+          msg: "article_id not found in the database",
+        });
+      }
+    });
+};

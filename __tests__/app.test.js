@@ -106,7 +106,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/not-a-number")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("404: responds with an error when passed an article_id not present in our database", () => {
@@ -188,7 +188,7 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 1 })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("400: responds with an error when passed a votes update that is an invalid type", () => {
@@ -197,7 +197,7 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: "not-a-number" })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("404: responds with an error when passed an article_id not present in our database", () => {
@@ -411,7 +411,7 @@ describe("GET /api/articles", () => {
       .get("/api/articles?limit=not-valid")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid query");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("400: responds with an error when passed an invalid query for page number (p)", () => {
@@ -419,7 +419,7 @@ describe("GET /api/articles", () => {
       .get("/api/articles?p=delete")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid query");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
 });
@@ -496,7 +496,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/not-a-number/comments")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("404: responds with an error when passed an article_id not present in our database", () => {
@@ -524,7 +524,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?limit=not-valid")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid query");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("400: responds with an error when passed an invalid query for page number (p)", () => {
@@ -532,7 +532,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?p=delete")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid query");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
 });
@@ -590,7 +590,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "icellusedkars", body: "this is great!" })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("404: responds with an error when passed an article_id not present in our database", () => {
@@ -638,7 +638,7 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/not-a-number")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("404: responds with an error when passed a comment ID not present in our database", () => {
@@ -694,7 +694,7 @@ describe("PATCH /api/comments/:comment_id", () => {
       .send({ inc_votes: 1 })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("400: responds with an error when passed a votes update that is an invalid type", () => {
@@ -703,7 +703,7 @@ describe("PATCH /api/comments/:comment_id", () => {
       .send({ inc_votes: "not-a-number" })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("You have made a bad request - invalid type");
+        expect(body.msg).toBe("You have made a bad request");
       });
   });
   test("404: responds with an error when passed a comment_id not present in our database", () => {
@@ -853,4 +853,25 @@ describe("POST /api/topics", () => {
          expect(body.msg).toBe("You have made a bad request");
        });
    });
+});
+describe("DELETE /api/articles/:article_id", () => {
+  test("204: returns status 204 when an article has been successfully deleted", () => {
+    return request(app).delete("/api/articles/4").expect(204);
+  });
+  test("400: responds with an error when passed an article ID that is invalid", () => {
+    return request(app)
+      .delete("/api/articles/not-a-number")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("You have made a bad request");
+      });
+  });
+  test("404: responds with an error when passed an article ID not present in our database", () => {
+    return request(app)
+      .delete("/api/articles/10000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("article_id not found in the database");
+      });
+  });
 });
