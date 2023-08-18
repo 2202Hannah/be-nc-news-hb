@@ -5,7 +5,7 @@ on:
     - main
     jobs:
       greeting:
-        runs-on: ubuntu-latest
-        steps:
-          - name: say hello
-          run: echo "hello from pipeline"
+      runs-on: ubuntu-latest
+      steps:
+        - name: say hello
+        run: echo "hello from pipeline"
