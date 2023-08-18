@@ -1,15 +1,18 @@
-name: Test
-run-name: testing app
+name: Test & Deploy
+run-name: Testing app
 on:
   pull_request:
-    branches: 
+    branches:
       - main
 jobs:
   test-utils:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout and clone repo
-      uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
       - name: install dependencies
-      run: npm install
-      - name: run test-utils
+        run: npm install
+
+      - name: run utils tests
+        run: npm run test-utils
