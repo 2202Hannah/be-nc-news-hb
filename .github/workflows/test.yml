@@ -3,15 +3,15 @@ on:
   pull_request:
     branches:
       - main
-  jobs:
-    test-utils:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout Repo
-        uses: actions/checkout@v3
+jobs:
+  test-utils:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+      uses: actions/checkout@v3
 
-        - name: install dependencies
-        run: npm install
+      - name: install dependencies
+      run: npm install
 
-        - name: run utils tests
-        run: npm run test-utils
+      - name: run utils tests
+      run: npm run test-utils
