@@ -1,3 +1,4 @@
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const { getAllEndPoints } = require(`./controllers/contents.controller`);
@@ -9,17 +10,18 @@ const {
   getCommentsByArticleId,
   postCommentsByArticleId,
   postArticle,
-  removeArticle
+  removeArticle,
 } = require(`./controllers/articles.controller`);
 const {
   getUsers,
-  getUserByUsername
+  getUserByUsername,
 } = require(`./controllers/users.controller`);
 const {
   removeComment,
-  patchCommentVotes
+  patchCommentVotes,
 } = require(`./controllers/comments.controller`);
 
+app.use(cors());
 app.use(express.json());
 
 app.get(`/api`, getAllEndPoints);
@@ -38,7 +40,7 @@ app.post(`/api/articles`, postArticle);
 app.post(`/api/topics`, postTopic);
 
 app.delete(`/api/comments/:comment_id`, removeComment);
-app.delete(`/api/articles/:article_id`, removeArticle)
+app.delete(`/api/articles/:article_id`, removeArticle);
 
 //Error handling
 
@@ -48,9 +50,7 @@ app.all("/*", (request, response) => {
 
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
-    response
-      .status(400)
-      .send({ msg: "You have made a bad request" });
+    response.status(400).send({ msg: "You have made a bad request" });
   } else {
     next(err);
   }
@@ -66,9 +66,7 @@ app.use((err, request, response, next) => {
 
 app.use((err, request, response, next) => {
   if (err.code === "42703") {
-    response
-      .status(400)
-      .send({ msg: "You have made a bad request" });
+    response.status(400).send({ msg: "You have made a bad request" });
   } else {
     next(err);
   }
