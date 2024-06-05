@@ -1,6 +1,6 @@
 # Northcoders News Backend Project
 
-Link to hosted version: https://nc-news-hb.herokuapp.com/api
+Link to hosted version: https://nc-news-4amo.onrender.com/api
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ I used the MVC model to structure the project.
 
 I wrote the application using full Test Driven Development (TDD). The tests for the application can be found in the **tests** folder. The tests also account for error handling and consider user error.
 
-I am hosting the app on Heroku here: https://nc-news-hb.herokuapp.com/api
+I am hosting the app online here: https://nc-news-4amo.onrender.com/api
 
 In the future I hope to implement a frontend user interface.
 

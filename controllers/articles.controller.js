@@ -4,16 +4,17 @@ const {
   selectArticles,
   selectCommentsByArticleId,
   insertComments,
-  insertArticle
+  insertArticle,
+  deleteArticle,
 } = require(`../models/articles.model`);
 
 exports.getArticleById = (request, response, next) => {
   const { article_id } = request.params;
   selectArticleById(article_id)
-    .then(article => {
+    .then((article) => {
       response.status(200).send({ article });
     })
-    .catch(err => {
+    .catch((err) => {
       next(err);
     });
 };
@@ -23,10 +24,10 @@ exports.patchArticleVotesById = (request, response, next) => {
   const { inc_votes: votes } = request.body;
 
   updateArticleVotes(article_id, votes)
-    .then(article => {
+    .then((article) => {
       response.status(200).send({ article });
     })
-    .catch(err => {
+    .catch((err) => {
       next(err);
     });
 };
@@ -39,10 +40,10 @@ exports.getArticles = (request, response, next) => {
   let p = request.query.p;
 
   selectArticles(topicFilter, orderQuery, sortQuery, limit, p)
-    .then(articles => {
+    .then((articles) => {
       response.status(200).send({ articles });
     })
-    .catch(err => {
+    .catch((err) => {
       next(err);
     });
 };
@@ -53,10 +54,10 @@ exports.getCommentsByArticleId = (request, response, next) => {
   let p = request.query.p;
 
   selectCommentsByArticleId(article_id, limit, p)
-    .then(comments => {
+    .then((comments) => {
       response.status(200).send({ comments });
     })
-    .catch(err => {
+    .catch((err) => {
       next(err);
     });
 };
@@ -66,22 +67,34 @@ exports.postCommentsByArticleId = (request, response, next) => {
   const { username, body } = request.body;
 
   insertComments(article_id, username, body)
-    .then(comment => {
+    .then((comment) => {
       response.status(201).send({ comment });
     })
-    .catch(err => {
+    .catch((err) => {
       next(err);
     });
 };
 
 exports.postArticle = (request, response, next) => {
-  const { author, title, body, topic } = request.body;
+  const { author, title, body, topic, article_img_url } = request.body;
 
-  insertArticle(author, title, body, topic)
-    .then(article => {
+  insertArticle(author, title, body, topic, article_img_url)
+    .then((article) => {
       response.status(201).send({ article });
     })
-    .catch(err => {
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.removeArticle = (request, response, next) => {
+  const { article_id } = request.params;
+
+  deleteArticle(article_id)
+    .then(() => {
+      response.status(204).send();
+    })
+    .catch((err) => {
       next(err);
     });
 };

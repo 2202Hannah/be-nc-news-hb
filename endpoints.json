@@ -41,13 +41,25 @@
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": [],
-    "exampleResponse": [
+    "exampleResponse": { 
+      "users": [
       {
         "username": "butter_bridge",
         "name": "jonny",
         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
       }
     ]
+  }
+},
+  "GET /api/users/:username": {
+    "description": "serves an object of information about a specific user",
+    "queries": [],
+    "exampleResponse": 
+      {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of all comments for a specified article",
@@ -112,13 +124,14 @@
     }
   },
   "POST /api/articles": {
-    "description": "inserts a new article to the articles table and returns the new article",
+    "description": "inserts a new article to the articles table and returns the new article. article_img_url is an optional input property.",
     "queries": [],
     "exampleInput": {
       "author": "rogersop",
       "title": "Books for Children",
       "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      "topic": "paper"
+      "topic": "paper",
+      "article_img_url": "https://schoolreadinglist.co.uk/wp-content/uploads/2022/10/reception-books-ft.jpg"
     },
     "exampleResponse": {
       "article_id": 13,
@@ -128,10 +141,26 @@
       "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis knostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       "created_at": "2022-10-13T15:15:02.213Z",
       "votes": 0,
-      "comment_count": 0
-    }
+      "comment_count": 0,
+      "article_img_url": "https://schoolreadinglist.co.uk/wp-content/uploads/2022/10/reception-books-ft.jpg"
+    },
+  "POST /api/topics": {
+    "description": "inserts a new topic to the topics table and returns the new topic",
+    "queries": [],
+    "exampleInput": {
+  "slug": "topic name here",
+  "description": "description here"
+    },
+    "exampleResponse": {
+  "slug": "topic name here",
+  "description": "description here"
+}
   },
-  "DELETE /api/comment/comment_id": {
+  "DELETE /api/comments/comment_id": {
     "description": "Deletes a specific comment from the database"
+  }
+},
+  "DELETE /api/articles/article_id": {
+    "description": "Deletes a specific article from the database"
   }
 }
